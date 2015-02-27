@@ -29,7 +29,7 @@ class Plane{
   }
   
   void fire(){
-    
+    bullets.add(new Bullet(new Vec2D(mouseX, mouseY)));
   }
    
 }
@@ -40,7 +40,7 @@ class Bullet {
   
   Bullet (Vec2D _loc){
     loc = _loc;
-    speed = new Vec2D(-30, 0);
+    speed = new Vec2D(0, -10);
     loadBulletImage();
   }
   
@@ -50,7 +50,12 @@ class Bullet {
   
   void show(){
     imageMode(CENTER);
+    move();
     image(bullet, loc.x, loc.y, width/40, width/10);
+  }
+  
+  void move(){
+    loc.addSelf(speed);
   }
 
 }
