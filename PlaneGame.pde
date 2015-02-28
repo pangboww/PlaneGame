@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 Plane myPlane;
 ArrayList bullets;
 ArrayList missiles;
+ArrayList enemies;
 
 Minim minim;
 AudioInput input;
@@ -18,6 +19,7 @@ void setup() {
   myPlane = new Plane();
   bullets = new ArrayList();
   missiles = new ArrayList();
+  enemies = new ArrayList();
   noCursor();
   thread("voiceControl");
 }
@@ -35,6 +37,15 @@ void draw() {
     Missile myMissile = (Missile) missiles.get(j);
     myMissile.show();
   }
+  for (int k = 0; k < enemies.size (); k++) {
+    Enemy myEnemy = (Enemy) enemies.get(k);
+    myEnemy.show();
+  }
+  
+}
+
+void mouseClicked(){
+  enemies.add(new Enemy());
 }
 
 void voiceControl() {

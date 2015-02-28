@@ -1,6 +1,7 @@
 PImage planeM, planeL, planeR;
 PImage bullet;
 PImage missile;
+PImage enemy;
 
 class Plane{
   Plane(){
@@ -98,10 +99,24 @@ class Enemy {
   Vec2D loc;
   Vec2D speed;
   
-  Enemy(Vec2D _loc){
-    loc = _loc;
+  Enemy(){
+    loc = new Vec2D(random(0, width), 0);
     speed = new Vec2D(random(0,5),random(0,7));
-    
+    loadEnemyImage();
   }
-
+  
+  void loadEnemyImage(){
+    enemy = loadImage("enemy.png");
+  }
+  
+  void show(){
+    imageMode(CENTER);
+    move();
+    image(enemy, loc.x, loc.y, width/7, width/7);
+  }
+  
+  void move(){
+    loc.addSelf(speed);
+  }
+  
 }
