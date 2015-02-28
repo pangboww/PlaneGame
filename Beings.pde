@@ -1,5 +1,6 @@
 PImage planeM, planeL, planeR;
 PImage bullet;
+PImage missile;
 
 class Plane{
   Plane(){
@@ -31,6 +32,10 @@ class Plane{
   void fire(){
     bullets.add(new Bullet(new Vec2D(mouseX, mouseY)));
   }
+  
+  void launch(){
+    missiles.add(new Missile(new Vec2D(mouseX, mouseY)));
+  }
    
 }
 
@@ -56,6 +61,47 @@ class Bullet {
   
   void move(){
     loc.addSelf(speed);
+  }
+}
+
+class Missile {
+  Vec2D loc;
+  Vec2D speed;
+  
+  Missile (Vec2D _loc){
+    loc = _loc;
+    speed = new Vec2D(random(-3,3), random(-5,-10));
+    loadMissileImage();
+  }
+  
+  void loadMissileImage(){
+    missile = loadImage("missile.png");
+  }
+  
+  void show(){
+    imageMode(CENTER);
+    move();
+    image(missile, loc.x, loc.y, width/30, width/8);
+  }
+  
+  void gravity(){
+    speed.addSelf(new Vec2D(random(-1,1), random(-1,1)));
+  }
+  
+  void move(){
+    gravity();
+    loc.addSelf(speed);
+  }
+}
+
+class Enemy {
+  Vec2D loc;
+  Vec2D speed;
+  
+  Enemy(Vec2D _loc){
+    loc = _loc;
+    speed = new Vec2D(random(0,5),random(0,7));
+    
   }
 
 }
