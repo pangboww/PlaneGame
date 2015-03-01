@@ -134,6 +134,8 @@ void collide(){
   }
 }
 
+
+
 boolean isInMap(Vec2D loc){
   if (loc.x > width) return false;
   if (loc.y > height) return false;

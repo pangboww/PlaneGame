@@ -28,7 +28,7 @@ class Plane{
   }
   
   void launch(){
-    missiles.add(new Missile(new Vec2D(mouseX, mouseY)));
+    missiles.add(new Missile(new Vec2D(mouseX, mouseY), enemies));
   }
    
 }
@@ -66,12 +66,17 @@ class Bullet {
 class Missile {
   Vec2D loc;
   Vec2D speed;
+  Vec2D acceleration;
+  Enemy target;
+  
   boolean isDestroyed;
   
-  Missile (Vec2D _loc){
+  Missile (Vec2D _loc, ArrayList<Enemy> _enemies){
     loc = _loc;
-    speed = new Vec2D(random(-3,3), random(-5,-10));
+    speed = new Vec2D(0, -3);
+    acceleration = new Vec2D(0, 0);
     isDestroyed = false;
+    target = chooseTarget(_enemies);
   }
   
   void show(){
@@ -79,22 +84,43 @@ class Missile {
       return;
     }
     imageMode(CENTER);
+    accelerate();
     move();
     image(missile, loc.x, loc.y, width/30, width/8);
   }
   
-  void gravity(){
-    speed.addSelf(new Vec2D(random(-1,1), random(-1,1)));
+  void accelerate(){
+    float distance = loc.distanceTo(target.loc);
+    Vec2D dir = target.loc.subSelf(loc);
+    dir.normalize();
+    acceleration = dir.scale(100/distance);
   }
   
   void move(){
-    gravity();
+    speed.addSelf(acceleration);
     loc.addSelf(speed);
   }
   
   void destroy(){
     isDestroyed = true;
   }
+  
+  Enemy chooseTarget(ArrayList<Enemy> enemies){
+    Enemy t = null;
+    float pdistance = width * height;
+    float distance;
+    for(int i = 0; i < enemies.size(); i++){
+      Enemy e = (Enemy) enemies.get(i);
+      distance = loc.distanceTo(e.loc);
+      if(distance < pdistance){
+        pdistance = distance;
+        t = e;
+      }
+    }
+    return t;
+  }
+  
+  
 }
 
 class Enemy {
@@ -124,6 +150,8 @@ class Enemy {
     imageMode(CENTER);
     image(enemy, loc.x, loc.y, width/7, width/7);
   }
+  
+  
   
   void move(){
     loc.addSelf(speed);
