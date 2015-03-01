@@ -5,9 +5,9 @@ import java.lang.System;
 import java.util.concurrent.TimeUnit;
 
 Plane myPlane;
-ArrayList bullets;
-ArrayList missiles;
-ArrayList enemies;
+ArrayList<Bullet> bullets;
+ArrayList<Missile> missiles;
+ArrayList<Enemy> enemies;
 
 Minim minim;
 AudioInput input;
@@ -16,36 +16,64 @@ AudioInput input;
 void setup() {
   size(400, 700);
   smooth();
+  explosion = new ArrayList<PImage>();
+  loadAllImage();
   myPlane = new Plane();
   bullets = new ArrayList();
   missiles = new ArrayList();
   enemies = new ArrayList();
   noCursor();
   thread("voiceControl");
+  thread("addEnemy");
 }
 
 void draw() {
   background(0);
+  
   myPlane.show();
-
+  
   for (int i = 0; i < bullets.size (); i++) {
     Bullet myBullet = (Bullet) bullets.get(i);
-    myBullet.show();
+    if (isInMap(myBullet.loc)){
+      myBullet.show();
+    }
+    else {
+      bullets.remove(i); 
+      print("bullets size: "+ bullets.size()+"\n"); 
+    }
   }
   
   for (int j = 0; j < missiles.size (); j++) {
     Missile myMissile = (Missile) missiles.get(j);
-    myMissile.show();
+    if (isInMap(myMissile.loc)){
+      myMissile.show();
+    }
+    else {
+      missiles.remove(j);
+    }
   }
   for (int k = 0; k < enemies.size (); k++) {
     Enemy myEnemy = (Enemy) enemies.get(k);
-    myEnemy.show();
+    if (isInMap(myEnemy.loc)){
+      myEnemy.show();
+    }
+    else {
+      enemies.remove(k);
+      print("enemies size: "+ enemies.size()+"\n"); 
+    } 
   }
-  
+  collide();
 }
 
-void mouseClicked(){
-  enemies.add(new Enemy());
+void addEnemy(){
+  while(true){
+    enemies.add(new Enemy());
+    try {
+      Thread.sleep(2000);                 
+    } catch(InterruptedException ex) {
+      Thread.currentThread().interrupt();
+    }
+  }
 }
 
 void voiceControl() {
@@ -88,7 +116,43 @@ void voiceControl() {
       myPlane.launch();
     }
   }
-
 }
+
+  
+void collide(){
+  for(Enemy e : enemies){
+    if (e.isDestroyed) continue;
+    for(Bullet b : bullets){
+      if (b.isDestroyed) continue;
+      float dis = e.loc.distanceTo(b.loc);
+      if (dis < 40){
+          e.destroy();
+          b.destroy();
+          continue;
+      }
+    }
+  }
+}
+
+boolean isInMap(Vec2D loc){
+  if (loc.x > width) return false;
+  if (loc.y > height) return false;
+  if (loc.x < 0) return false;
+  if (loc.y < 0) return false;
+  return true;
+}
+
+void loadAllImage(){
+  planeM = loadImage("plane_middle.png");
+  planeL = loadImage("plane_left.png");
+  planeR = loadImage("plane_right.png");
+  bullet = loadImage("bullet.png");
+  missile = loadImage("missile.png");
+  enemy = loadImage("aerolite01.png");
+  for(int i = 1; i <= 16; i++){
+      explosion.add(loadImage("explosion" + i +".png"));
+  }
+}
+
 
 

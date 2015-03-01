@@ -2,17 +2,10 @@ PImage planeM, planeL, planeR;
 PImage bullet;
 PImage missile;
 PImage enemy;
+ArrayList<PImage> explosion;
 
 class Plane{
-  Plane(){
-    loadPlaneImage();
-  }
-  
-  void loadPlaneImage(){
-    planeM = loadImage("plane_middle.png");
-    planeL = loadImage("plane_left.png");
-    planeR = loadImage("plane_right.png");
-  }
+  Plane(){}
   
   void show(){
     imageMode(CENTER);
@@ -43,18 +36,19 @@ class Plane{
 class Bullet {
   Vec2D loc;
   Vec2D speed;
+  boolean isDestroyed;
   
   Bullet (Vec2D _loc){
     loc = _loc;
     speed = new Vec2D(0, -10);
-    loadBulletImage();
+    isDestroyed = false;
   }
   
-  void loadBulletImage(){
-    bullet = loadImage("bullet.png");
-  }
   
   void show(){
+    if(isDestroyed){
+      return;
+    }
     imageMode(CENTER);
     move();
     image(bullet, loc.x, loc.y, width/40, width/10);
@@ -63,23 +57,27 @@ class Bullet {
   void move(){
     loc.addSelf(speed);
   }
+  
+  void destroy(){
+    isDestroyed = true;
+  }
 }
 
 class Missile {
   Vec2D loc;
   Vec2D speed;
+  boolean isDestroyed;
   
   Missile (Vec2D _loc){
     loc = _loc;
     speed = new Vec2D(random(-3,3), random(-5,-10));
-    loadMissileImage();
-  }
-  
-  void loadMissileImage(){
-    missile = loadImage("missile.png");
+    isDestroyed = false;
   }
   
   void show(){
+    if(isDestroyed){
+      return;
+    }
     imageMode(CENTER);
     move();
     image(missile, loc.x, loc.y, width/30, width/8);
@@ -93,30 +91,46 @@ class Missile {
     gravity();
     loc.addSelf(speed);
   }
+  
+  void destroy(){
+    isDestroyed = true;
+  }
 }
 
 class Enemy {
   Vec2D loc;
   Vec2D speed;
+  boolean isDestroyed;
+  int destroyedState;
   
   Enemy(){
-    loc = new Vec2D(random(0, width), 0);
-    speed = new Vec2D(random(0,5),random(0,7));
-    loadEnemyImage();
+    loc = new Vec2D(random(30, width-30), 0);
+    speed = new Vec2D(0,random(0,7));
+    isDestroyed = false;
+    destroyedState = 0;
   }
-  
-  void loadEnemyImage(){
-    enemy = loadImage("enemy.png");
-  }
+
   
   void show(){
-    imageMode(CENTER);
+    if(isDestroyed && destroyedState > 15) return;
+    if(isDestroyed){
+      imageMode(CENTER);
+      image(explosion.get(destroyedState), loc.x, loc.y, width/7, width/7);
+      destroyedState++;
+      move();
+      return;
+    }
     move();
+    imageMode(CENTER);
     image(enemy, loc.x, loc.y, width/7, width/7);
   }
   
   void move(){
     loc.addSelf(speed);
+  }
+  
+  void destroy(){
+    isDestroyed = true;
   }
   
 }
