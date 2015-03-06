@@ -2,8 +2,10 @@ import toxi.geom.*;
 import toxi.math.*;
 import ddf.minim.*;
 import java.lang.System;
+import java.lang.Math;
 import java.util.concurrent.TimeUnit;
 
+PImage background;
 Plane myPlane;
 ArrayList<Bullet> bullets;
 ArrayList<Missile> missiles;
@@ -14,7 +16,7 @@ AudioInput input;
 
 
 void setup() {
-  size(400, 700);
+  size(768, 1024);
   smooth();
   explosion = new ArrayList<PImage>();
   loadAllImage();
@@ -28,9 +30,20 @@ void setup() {
 }
 
 void draw() {
-  background(0);
+  background(background);
   
   myPlane.show();
+  
+  for (int k = 0; k < enemies.size (); k++) {
+    Enemy myEnemy = (Enemy) enemies.get(k);
+    if (isInMap(myEnemy.loc)){
+      myEnemy.show();
+    }
+    else {
+      enemies.remove(k);
+      print("enemies size: "+ enemies.size()+"\n"); 
+    } 
+  }
   
   for (int i = 0; i < bullets.size (); i++) {
     Bullet myBullet = (Bullet) bullets.get(i);
@@ -52,16 +65,7 @@ void draw() {
       missiles.remove(j);
     }
   }
-  for (int k = 0; k < enemies.size (); k++) {
-    Enemy myEnemy = (Enemy) enemies.get(k);
-    if (isInMap(myEnemy.loc)){
-      myEnemy.show();
-    }
-    else {
-      enemies.remove(k);
-      print("enemies size: "+ enemies.size()+"\n"); 
-    } 
-  }
+  
   collide();
 }
 
@@ -131,6 +135,15 @@ void collide(){
           continue;
       }
     }
+    for(Missile m : missiles){
+      if (m.isDestroyed) continue;
+      float dis = e.loc.distanceTo(m.loc);
+      if (dis < 40){
+          e.destroy();
+          m.destroy();
+          continue;
+      }
+    }
   }
 }
 
@@ -145,9 +158,10 @@ boolean isInMap(Vec2D loc){
 }
 
 void loadAllImage(){
-  planeM = loadImage("plane_middle.png");
-  planeL = loadImage("plane_left.png");
-  planeR = loadImage("plane_right.png");
+  background = loadImage("airPlanesBackground.png");
+  planeM = loadImage("PLANE 8 N.png");
+  planeL = loadImage("PLANE 8 L.png");
+  planeR = loadImage("PLANE 8 R.png");
   bullet = loadImage("bullet.png");
   missile = loadImage("missile.png");
   enemy = loadImage("aerolite01.png");

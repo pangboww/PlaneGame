@@ -28,7 +28,7 @@ class Plane{
   }
   
   void launch(){
-    missiles.add(new Missile(new Vec2D(mouseX, mouseY), enemies));
+    missiles.add(new Missile(new Vec2D(mouseX, mouseY)));
   }
    
 }
@@ -68,45 +68,69 @@ class Missile {
   Vec2D speed;
   Vec2D acceleration;
   Enemy target;
+  float direction;
   
   boolean isDestroyed;
   
-  Missile (Vec2D _loc, ArrayList<Enemy> _enemies){
+  Missile (Vec2D _loc){
     loc = _loc;
-    speed = new Vec2D(0, -3);
     acceleration = new Vec2D(0, 0);
+    direction = 0;
     isDestroyed = false;
-    target = chooseTarget(_enemies);
+    target = chooseTarget(enemies); 
+    speed = target.loc.sub(loc).normalize();
   }
   
   void show(){
     if(isDestroyed){
       return;
     }
-    imageMode(CENTER);
+    target = chooseTarget(enemies); 
     accelerate();
     move();
-    image(missile, loc.x, loc.y, width/30, width/8);
+    direct();
+    translate(loc.x, loc.y);
+    imageMode(CENTER);
+    rotate(direction);
+    image(missile, 0, 0, width/30, width/8);
+    
   }
   
   void accelerate(){
-    float distance = loc.distanceTo(target.loc);
-    Vec2D dir = target.loc.subSelf(loc);
+    float distance = loc.distanceTo(target.loc.add(target.speed)); 
+    Vec2D dir = target.loc.sub(loc);
     dir.normalize();
-    acceleration = dir.scale(100/distance);
+    acceleration = dir.scale(100/distance); 
+  }
+  
+  void direct(){
+    float x = speed.x;
+    float y = speed.y;
+    if(x<0){
+      direction = (float)Math.atan(y / x) - PI/2;
+    }
+    else{
+      direction = (float)Math.atan(y / x) + PI/2;
+    }
   }
   
   void move(){
     speed.addSelf(acceleration);
+    if (speed.x>30) speed.x = 30;
+    if (speed.x<-30) speed.x = -30;
+    if (speed.y>30) speed.y = 30;
+    if (speed.y<-30) speed.y = -30;
     loc.addSelf(speed);
   }
+  
+ 
   
   void destroy(){
     isDestroyed = true;
   }
   
   Enemy chooseTarget(ArrayList<Enemy> enemies){
-    Enemy t = null;
+    Enemy t = new Enemy();
     float pdistance = width * height;
     float distance;
     for(int i = 0; i < enemies.size(); i++){
@@ -119,8 +143,6 @@ class Missile {
     }
     return t;
   }
-  
-  
 }
 
 class Enemy {
@@ -131,14 +153,18 @@ class Enemy {
   
   Enemy(){
     loc = new Vec2D(random(30, width-30), 0);
-    speed = new Vec2D(0,random(0,7));
+    speed = new Vec2D(0,random(2,4));
     isDestroyed = false;
     destroyedState = 0;
   }
 
   
   void show(){
-    if(isDestroyed && destroyedState > 15) return;
+    if(isDestroyed && destroyedState > 15){
+      loc.x = -100;
+      loc.y = -100;
+      return;
+    };
     if(isDestroyed){
       imageMode(CENTER);
       image(explosion.get(destroyedState), loc.x, loc.y, width/7, width/7);
