@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 PImage background;
 PImage planeM, planeL, planeR;
+PImage propeller1, propeller2;
 PImage shadow;
 PImage bullet;
 PImage missile;
@@ -80,7 +81,7 @@ void addEnemy(){
   while(true){
     enemies.add(new Enemy());
     try {
-      Thread.sleep(2000);                 
+      Thread.sleep(1000);                 
     } catch(InterruptedException ex) {
       Thread.currentThread().interrupt();
     }
@@ -169,6 +170,8 @@ void loadAllImage(){
   planeM = loadImage("PLANE 8 N.png");
   planeL = loadImage("PLANE 8 L.png");
   planeR = loadImage("PLANE 8 R.png");
+  propeller1 = loadImage("PLANE PROPELLER 1.png");
+  propeller2 = loadImage("PLANE PROPELLER 2.png");
   shadow = loadImage("PLANE 8 SHADOW.png");
   bullet = loadImage("bullet.png");
   missile = loadImage("missile.png");

@@ -1,12 +1,19 @@
 
 
 class Plane{
-  Plane(){}
+  boolean ppl;
+  int c;
+  
+  Plane(){
+    ppl = true;
+    c = 1;
+  }
   
   void show(){
     imageMode(CENTER);
     image(shadow, mouseX, mouseY+30,width/7,width/7);
     image(choosePlaneImage(), mouseX, mouseY, width/7, width/7);
+    image(choosePropellerImage(), mouseX,mouseY-width/17, width/9, width/50);
 
   }
   
@@ -17,6 +24,17 @@ class Plane{
       return planeR;
     } else {
       return planeM;
+    }
+  }
+  
+  PImage choosePropellerImage(){
+    if(ppl){
+      ppl = false;
+      return propeller1;
+    }
+    else{
+      ppl = true;
+      return propeller2;
     }
   }
   
