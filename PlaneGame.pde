@@ -6,6 +6,13 @@ import java.lang.Math;
 import java.util.concurrent.TimeUnit;
 
 PImage background;
+PImage planeM, planeL, planeR;
+PImage shadow;
+PImage bullet;
+PImage missile;
+PImage enemy;
+ArrayList<PImage> explosion;
+
 Plane myPlane;
 ArrayList<Bullet> bullets;
 ArrayList<Missile> missiles;
@@ -16,7 +23,7 @@ AudioInput input;
 
 
 void setup() {
-  size(768, 1024);
+  size(512, 768);
   smooth();
   explosion = new ArrayList<PImage>();
   loadAllImage();
@@ -162,6 +169,7 @@ void loadAllImage(){
   planeM = loadImage("PLANE 8 N.png");
   planeL = loadImage("PLANE 8 L.png");
   planeR = loadImage("PLANE 8 R.png");
+  shadow = loadImage("PLANE 8 SHADOW.png");
   bullet = loadImage("bullet.png");
   missile = loadImage("missile.png");
   enemy = loadImage("aerolite01.png");

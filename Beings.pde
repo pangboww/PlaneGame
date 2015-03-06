@@ -1,14 +1,11 @@
-PImage planeM, planeL, planeR;
-PImage bullet;
-PImage missile;
-PImage enemy;
-ArrayList<PImage> explosion;
+
 
 class Plane{
   Plane(){}
   
   void show(){
     imageMode(CENTER);
+    image(shadow, mouseX, mouseY+30,width/7,width/7);
     image(choosePlaneImage(), mouseX, mouseY, width/7, width/7);
 
   }
@@ -24,11 +21,11 @@ class Plane{
   }
   
   void fire(){
-    bullets.add(new Bullet(new Vec2D(mouseX, mouseY)));
+    bullets.add(new Bullet(new Vec2D(mouseX, mouseY-40)));
   }
   
   void launch(){
-    missiles.add(new Missile(new Vec2D(mouseX, mouseY)));
+    missiles.add(new Missile(new Vec2D(mouseX, mouseY-60)));
   }
    
 }
@@ -51,7 +48,7 @@ class Bullet {
     }
     imageMode(CENTER);
     move();
-    image(bullet, loc.x, loc.y, width/40, width/10);
+    image(bullet, loc.x, loc.y, width/60, width/40);
   }
   
   void move(){
